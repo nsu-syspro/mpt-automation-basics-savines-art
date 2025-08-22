@@ -36,11 +36,11 @@ function check_empty_test_output() {
   EXPECTED=""
 
   set +e
-  ACTUAL=$(make test 2>&1)
+  ACTUAL=$(make check 2>&1)
   ACTUAL_EXIT=$?
   set -e
   if [[ $ACTUAL_EXIT -ne 0 ]]; then
-    echo "make test"
+    echo "make check"
     echo "$ACTUAL"
     fail
   fi
@@ -51,48 +51,48 @@ function check_test_output_contains() {
   EXPECTED_STR="$1"
 
   set +e
-  ACTUAL=$(make test 2>&1)
+  ACTUAL=$(make check 2>&1)
   ACTUAL_EXIT=$?
   set -e
   if [[ $ACTUAL_EXIT -eq 0 ]]; then
-    echo "make test"
+    echo "make check"
     echo "$ACTUAL"
     fail "expected to fail after incorrect change in one of the tests"
   fi
   if ! echo "$ACTUAL" | grep "$EXPECTED_STR" >/dev/null; then
-    echo "make test"
+    echo "make check"
     echo "$ACTUAL"
     fail "expected to see diff in case of test failure"
   fi
 }
 
 
-echo "Test case #1 (make build test)"
+echo "Test case #1 (make check)"
 
 assert_has_changes
-make -s build test
+make -s check
 assert_no_changes
 
-echo "Test case #2 (make clean test)"
+echo "Test case #2 (make clean check)"
 
 assert_no_changes
-make -s clean test
+make -s clean check
 assert_no_changes
 
-echo "Test case #3 (no output for successful make test)"
+echo "Test case #3 (no output for successful make check)"
 
 assert_no_changes
 check_empty_test_output
 assert_no_changes
 
-echo "Test case #4 (no changes outside of 'build' after make test)"
+echo "Test case #4 (no changes outside of 'build' after make check)"
 
 assert_no_changes
-make test
+make check
 assert_no_changes
 diff -u --color=always -qr --exclude=build "$ROOT_DIR" "$TMP_DIR" || fail
 
-echo "Test case #5 (make test fails for incorrect tests)"
+echo "Test case #5 (make check fails for incorrect tests)"
 
 assert_no_changes
 BAD_STR=$(date +%s)
