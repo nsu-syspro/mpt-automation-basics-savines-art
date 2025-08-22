@@ -1,0 +1,113 @@
+name: Autograding Tests
+'on':
+  push:
+    # Only run on main branch to avoid triggering infinitely,
+    # when points bar branch is updated (see update-points-bar job below)
+    branches:
+    - 'main'
+  workflow_dispatch:
+  repository_dispatch:
+permissions:
+  checks: write
+  actions: read
+  contents: read
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    outputs:
+      # Setup outputs for update-points-bar job below
+      points: ${{ steps.autograder.outputs.points }}
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Run ShellCheck
+      uses: ludeeus/action-shellcheck@master
+      with:
+        scandir: './.test'
+      env:
+        SHELLCHECK_OPTS: -e SC2028
+
+    - name: 'Task #1'
+      id: task-1
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: 'Task #1'
+        setup-command: '' # (Optional) Run before the test is run.
+        command: ./.test/task1/validate
+        timeout: 1 # The amount of minutes the test is allowed to run before it is killed. Maximum 60 minutes.
+        max-score: 3 # (Optional) The amount of points awarded if the test passes.
+
+    - name: 'Task #2'
+      id: task-2
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: 'Task #2'
+        setup-command: '' # (Optional) Run before the test is run.
+        command: ./.test/task2/validate
+        timeout: 1 # The amount of minutes the test is allowed to run before it is killed. Maximum 60 minutes.
+        max-score: 3 # (Optional) The amount of points awarded if the test passes.
+
+    - name: 'Task #3'
+      id: task-3
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: 'Task #3'
+        setup-command: '' # (Optional) Run before the test is run.
+        command: ./.test/task3/validate
+        timeout: 5 # The amount of minutes the test is allowed to run before it is killed. Maximum 60 minutes.
+        max-score: 3 # (Optional) The amount of points awarded if the test passes.
+
+    - name: 'Task #4'
+      id: task-4
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: 'Task #4'
+        setup-command: '' # (Optional) Run before the test is run.
+        command: ./.test/task4/validate
+        timeout: 1 # The amount of minutes the test is allowed to run before it is killed. Maximum 60 minutes.
+        max-score: 1 # (Optional) The amount of points awarded if the test passes.
+
+    #############################
+    # Autograding reporter
+    #
+    # IMPORTANT: update env variables and runners below to use actual tests defined above!
+    #
+    - name: Autograding Reporter
+      id: autograder
+      uses: liontiger23/autograding-grading-reporter@v1
+      env:
+        TASK-1_RESULTS: "${{steps.task-1.outputs.result}}"
+        TASK-2_RESULTS: "${{steps.task-2.outputs.result}}"
+        TASK-3_RESULTS: "${{steps.task-3.outputs.result}}"
+        TASK-4_RESULTS: "${{steps.task-4.outputs.result}}"
+      with:
+        runners: task-1,task-2,task-3,task-4
+
+  ############################
+  # Generate points bar badge
+  #
+  # Add badge to README.md with
+  #
+  #   ![Points](../../blob/badges/.github/badges/points-bar.svg)
+  #
+  # or if you want to float it to the right:
+  #
+  #   <img alt="Points" align="right" height="36" src="../../blob/badges/.github/badges/points-bar.svg" />
+  #
+  # Note: will run even if autograding failed thanks to `if: success() || failure()`.
+  #
+  update-points-bar:
+    needs: run-autograding-tests
+    if: ${{ (success() || failure()) && needs.run-autograding-tests.outputs.points }}
+    uses: markpatterson27/points-bar/.github/workflows/reusable-workflow.yml@main
+    permissions:
+      contents: write
+    with:
+      points: ${{ needs.run-autograding-tests.outputs.points }}
+      path: '.github/badges/points-bar.svg'
+      label: 'Баллы'
+      branch: badges
+    secrets:
+      token: ${{ secrets.GITHUB_TOKEN }}
