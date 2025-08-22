@@ -12,8 +12,9 @@ TMP_DIR=$(mktemp -d)
 ######################
 
 mkdir -p "$TMP_DIR"
+shopt -s dotglob # include dotfiles
 cp -r "$ROOT_DIR"/* "$TMP_DIR"
-cp -r "$ROOT_DIR"/.* "$TMP_DIR"
+shopt -u dotglob
 cd "$TMP_DIR"
 
 ######################
