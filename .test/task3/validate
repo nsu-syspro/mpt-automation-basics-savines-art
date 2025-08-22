@@ -29,6 +29,7 @@ function build_docker() {
 }
 
 function run_docker() {
+  # shellcheck disable=SC2068
   docker run --rm -i wordcount $@
 }
 
@@ -37,11 +38,11 @@ function check_docker_test() {
   EXPECTED=$(cat "$TMP_DIR/test/$TEST_NAME.expected")
 
   set +e
-  ACTUAL=$(cat "$TMP_DIR/test/$TEST_NAME.txt" | run_docker 2>&1)
+  ACTUAL=$(run_docker <"$TMP_DIR/test/$TEST_NAME.txt" 2>&1)
   ACTUAL_EXIT=$?
   set -e
   if [[ $ACTUAL_EXIT -ne 0 ]]; then
-    echo "cat $TMP_DIR/test/$TEST_NAME.txt | docker run --rm -i wordcount"
+    echo "docker run --rm -i wordcount < $TMP_DIR/test/$TEST_NAME.txt"
     echo "$ACTUAL"
     fail
   fi
