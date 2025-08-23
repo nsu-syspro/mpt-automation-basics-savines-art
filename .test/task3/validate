@@ -29,8 +29,7 @@ function build_docker() {
 }
 
 function run_docker() {
-  # shellcheck disable=SC2068
-  docker run --rm -i wordcount $@
+  docker run --rm -i wordcount "$@"
 }
 
 function check_docker_test() {
@@ -72,11 +71,11 @@ echo "Success"
 echo "Test case #5 (task1 validation passes in docker image)"
 
 echo ">>> Inside docker"
-run_docker "bash ./.test/task1/validate"
+run_docker bash -c "make clean && uname -a && bash .test/task1/validate"
 echo "<<<"
 
 echo "Test case #6 (task2 validation passes in docker image)"
 
 echo ">>> Inside docker"
-run_docker "bash ./.test/task2/validate"
+run_docker bash -c "make clean && uname -a && bash .test/task2/validate"
 echo "<<<"
