@@ -136,9 +136,9 @@ wordcount version 1.0.0
 [Continuous Integration](https://docs.github.com/en/actions/get-started/continuous-integration) (CI),
 для автоматической верификации (сборки и тестирования) каждого изменения в репозитории приложения.
 
-Требуется создать *workflow* с помощью
+Требуется создать *workflow* в
 [GitHub Actions](https://docs.github.com/en/actions/get-started/understand-github-actions),
-который будет автоматически запускать сборку и тестирование приложения `wordcount`
+который будет автоматически запускать сборку и тестирование приложения с помощью `make`
 на каждый *push* и Pull request в `main` ветку.
 
 > [!TIP]
