@@ -100,4 +100,15 @@ echo "$BAD_STR" > "$TMP_DIR/test/empty.expected"
 assert_no_changes
 check_test_output_contains "$BAD_STR"
 assert_no_changes
+echo "0" > "$TMP_DIR/test/empty.expected"
+
+echo "Test case #6 (make check fails for new incorrect tests)"
+
+assert_no_changes
+BAD_STR=$(date +%s)
+echo "$BAD_STR" > "$TMP_DIR/test/bad.expected"
+echo "" > "$TMP_DIR/test/bad.txt"
+assert_no_changes
+check_test_output_contains "$BAD_STR"
+assert_no_changes
 
