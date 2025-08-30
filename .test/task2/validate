@@ -44,7 +44,7 @@ function check_empty_test_output() {
     echo "$ACTUAL"
     fail
   fi
-  diff -u --color=always -U 1000 <(echo "$EXPECTED") <(echo "$ACTUAL") || fail
+  diff --color=always -U 1000 <(echo "$EXPECTED") <(echo "$ACTUAL") || fail
 }
 
 function check_test_output_contains() {
@@ -90,7 +90,7 @@ echo "Test case #4 (no changes outside of 'build' after make check)"
 assert_no_changes
 make check
 assert_no_changes
-diff -u --color=always -qr --exclude=build "$ROOT_DIR" "$TMP_DIR" || fail
+diff --color=always -qr --exclude=build "$ROOT_DIR" "$TMP_DIR" || fail
 
 echo "Test case #5 (make check fails for incorrect tests)"
 

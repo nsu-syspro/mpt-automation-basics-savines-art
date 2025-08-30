@@ -45,7 +45,7 @@ function check_docker_test() {
     echo "$ACTUAL"
     fail
   fi
-  diff -u --color=always -U 1000 <(echo "$EXPECTED") <(echo "$ACTUAL") || fail
+  diff --color=always -U 1000 <(echo "$EXPECTED") <(echo "$ACTUAL") || fail
 }
 
 

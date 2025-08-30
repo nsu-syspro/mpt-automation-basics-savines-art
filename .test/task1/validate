@@ -48,7 +48,7 @@ function check_version() {
     echo "$ACTUAL"
     fail
   fi
-  diff -u --color=always -U 1000 <(echo "$EXPECTED") <(echo "$ACTUAL") || fail
+  diff --color=always -U 1000 <(echo "$EXPECTED") <(echo "$ACTUAL") || fail
 }
 
 
@@ -70,14 +70,14 @@ echo "Test case #3 (no changes outside of 'build' after make)"
 assert_has_changes
 make -s
 assert_no_changes
-diff -u --color=always -qr --exclude=build "$ROOT_DIR" "$TMP_DIR" || fail
+diff --color=always -qr --exclude=build "$ROOT_DIR" "$TMP_DIR" || fail
 
 echo "Test case #4 (no changes outside of 'build' after make clean)"
 
 assert_no_changes
 make -s clean
 assert_has_changes
-diff -u --color=always -qr --exclude=build "$ROOT_DIR" "$TMP_DIR" || fail
+diff --color=always -qr --exclude=build "$ROOT_DIR" "$TMP_DIR" || fail
 
 echo "Test case #5 (make all)"
 
